@@ -14,7 +14,7 @@ import java.util.List;
 @RunWith(AtUnit.class)
 public class EquationSolverTest {
     @Unit
-    private final EquationSolver equationSolver = new EquationSolverImpl();
+    private final EquationSolver equationSolver = new EquationSolver1();
 
     @Test
     public void solveTest() {
