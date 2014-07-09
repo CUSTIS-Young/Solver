@@ -2,7 +2,9 @@ package ru.custis.young.solver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class EquationSolver1 implements EquationSolver {
     /**
@@ -29,7 +31,22 @@ public class EquationSolver1 implements EquationSolver {
 
         // вначале инициализируем его нулями
         Arrays.fill(row, 0);
-
+        if (number == 0) {
+            return row;
+        }
+        if (number < factors[0]) {
+            throw new NoSolutionException();
+        }
+        Arrays.sort(factors);
+        int GCD = gcd(getList(factors));
+        if (number % GCD != 0) {
+            throw new NoSolutionException();
+        } else {
+            for (int i = 0; i < factors.length; i++) {
+                factors[i] /= GCD;
+            }
+            number /= GCD;
+        }
         // далее в цикле перебираем возможные значения и проверяем, сошлось ли равенство
         do {
             final int sum = calculateSum(row, factors);
@@ -65,7 +82,7 @@ public class EquationSolver1 implements EquationSolver {
      * @param factors  Массив со значениями коэффициентов &alpha;<sub>i</sub>
      * @return Сумму &Sigma;&alpha;<sub>i</sub>x<sub>i</sub>.
      */
-    private int calculateSum(int[] summands, int[] factors) {
+    private int calculateSum(@NotNull int[] summands, @NotNull int[] factors) {
         assert summands.length == factors.length;
 
         int sum = 0;
@@ -73,5 +90,52 @@ public class EquationSolver1 implements EquationSolver {
             sum += summands[i] * factors[i];
         }
         return sum;
+    }
+
+    /**
+     * Конвертирует массив в список
+     *
+     * @param numbers массив
+     * @return <code>List<Integer></code>
+     */
+    @NotNull
+    private List<Integer> getList(@NotNull int[] numbers) {
+        List<Integer> result = new ArrayList<Integer>(numbers.length);
+        for (int number : numbers) {
+            result.add(number);
+        }
+        return result;
+    }
+
+    /**
+     * НОД 2 чисел
+     *
+     * @param number1 Число 1
+     * @param number2 Число 2
+     * @return НОД
+     */
+    private int gcd(int number1, int number2) {
+        if (number2 == 0) {
+            return number1;
+        }
+        return gcd(number2, number1 % number2);
+    }
+
+    /**
+     * НОД всех чисел списка
+     *
+     * @param numbers Список чисел
+     * @return НОД
+     */
+    private int gcd(@NotNull List<Integer> numbers) {
+        if (numbers.size() == 1) {
+            return numbers.get(0);
+        }
+        if (numbers.size() == 2) {
+            return gcd(numbers.get(0), numbers.get(1));
+        }
+        int removed = numbers.get(0);
+        numbers.remove(0);
+        return gcd(gcd(numbers), removed);
     }
 }
