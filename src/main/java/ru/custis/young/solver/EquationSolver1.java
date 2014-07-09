@@ -1,6 +1,3 @@
-/**
- * @author: Kudryavtsev Andrey(kudrandrew@gmail.com)
- */
 package ru.custis.young.solver;
 
 import org.jetbrains.annotations.NotNull;
