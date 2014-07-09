@@ -1,3 +1,6 @@
+/**
+ * @author: Kudryavtsev Andrey(kudrandrew@gmail.com)
+ */
 package ru.custis.young.solver;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +37,15 @@ public class EquationSolver1 implements EquationSolver {
         if (number == 0) {
             return row;
         }
+        /// Здесь ошибка. Сначала сравнение number с factors[0], а потом сортировка массива, чтобы на месте
+        /// factors[0] оказался наименьший коэффициент. Очевидно, нужно сначала сортировать, а потом использовать
+        /// factors[0].
+        /// См. тест EquationSolverTest.wrongOrderTest(), который иллюстрирует эту ошибку.
+        ///
+        /// Кроме того, кажется, что здесь уместнее использовать не сортировку, а просто искать максимальный элемент.
+        /// Во-первых, это быстрее (а мы решаем задачу оптимизации). Сложность поиска максимального элемента имеет
+        /// сложность O(n), а сложность использованного метода сортировки (см. javadoc) — O(n*log(n)).
+        /// Во-вторых, это сделало бы код более читабельным.
         if (number < factors[0]) {
             throw new NoSolutionException();
         }
@@ -137,5 +149,37 @@ public class EquationSolver1 implements EquationSolver {
         int removed = numbers.get(0);
         numbers.remove(0);
         return gcd(gcd(numbers), removed);
+    }
+
+    /// конвертировать массив в список (метод getList) кажется излишним. Почему бы не реализовать вычисление НОД сразу
+    /// для массивов?
+    /// (например, так, как сделано в двух методах ниже)
+
+    /**
+     * Вычисляет наибольший общий делитель массива чисел
+     *
+     * @param numbers массив чисел
+     * @return наибольший общий делитель
+     */
+    private int getGreatestCommonDivisor(int[] numbers) {
+        int greatestCommonDivisor = numbers[0];
+        for (int i = 1; i < numbers.length; i++) {
+            greatestCommonDivisor = getGreatestCommonDivisor(greatestCommonDivisor, numbers[i]);
+        }
+        return greatestCommonDivisor;
+    }
+
+    /**
+     * Вычисляет наибольший общий делитель двух чисел (алгоритм Евклида)
+     *
+     * @param a первое число
+     * @param b второе число
+     * @return наибольший общий делитель
+     */
+    private int getGreatestCommonDivisor(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+        return getGreatestCommonDivisor(b, a % b);
     }
 }

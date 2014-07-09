@@ -56,4 +56,10 @@ public class EquationSolverTest {
 
         System.out.println("MaxDelta is " + maxDelta + " ms.");
     }
+
+    @Test
+    public void wrongOrderTest() throws NoSolutionException {
+        // уравнение 91x + y = 1, очевидно, имеет решение x = 0, y = 1.
+        equationSolver.solve(1, new int [] {91, 1});
+    }
 }
